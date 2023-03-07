@@ -45,9 +45,11 @@ int main(){
                     }
                     output.clear(); // reference to a global var in algorithm.cpp
                 }
-                if(event.mouseButton.button == sf::Mouse::Middle){
+            }
+            if (event.type == sf::Event::KeyPressed){
+                if(event.key.code == sf::Keyboard::R){
                     sf_lines.clear();
-                    sf_intersections.clear();
+                    sf_intersections.clear();    
                 }
             }
         }
