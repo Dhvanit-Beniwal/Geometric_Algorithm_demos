@@ -30,7 +30,7 @@ void make_hull(){
 int main(){      
     sf::ContextSettings settings;
     settings.antialiasingLevel = 6;
-    sf::RenderWindow window(sf::VideoMode(1000, 750), "minimal partition into monotonically increasing chains", sf::Style::Default, settings);
+    sf::RenderWindow window(sf::VideoMode(1000, 750), "convex hull", sf::Style::Default, settings);
     while (window.isOpen())
     {
         sf::Event event;
