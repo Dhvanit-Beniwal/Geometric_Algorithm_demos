@@ -1,34 +1,21 @@
+// #include <iostream>
+
 #include <SFML/Graphics.hpp>
 #include <set>
 #include <vector>
-#include <iostream>
+#include <cmath>
+#include <limits>
 
-#include "algorithm.cpp"
-
-std::vector< sf::CircleShape > sf_intersections;
-std::vector< sf::Vertex > sf_lines;
-
-sf::CircleShape make_dot(float x, float y){
-    float r = 2.f;
-    sf::CircleShape point(r, 10);
-    point.setPosition(x-r,y-r);
-    point.setFillColor(sf::Color::White);
-    point.setOutlineThickness(8.f);
-    point.setOutlineColor(sf::Color::Blue);
-    return point;
-}
-sf::Vertex make_vertex(float x, float y){
-    return sf::Vertex(sf::Vector2f(x, y), sf::Color::White);
-}
-sf::Vertex dot_to_vertex(sf::CircleShape dot){
-    float r = dot.getRadius();
-    return sf::Vertex(sf::Vector2f(dot.getPosition().x+r, dot.getPosition().y+r), sf::Color::White);
-}
+#include "algorithm.hpp"
 
 int main(){      
     sf::ContextSettings settings;
     settings.antialiasingLevel = 6;
     sf::RenderWindow window(sf::VideoMode(1000, 750), "intersections of line segments", sf::Style::Default, settings);
+    
+    double x,y; // buffer for user input of line segments by clicking twice
+    bool flag = false;
+    
     while (window.isOpen())
     {
         sf::Event event;
@@ -36,29 +23,32 @@ int main(){
             if (event.type == sf::Event::Closed){window.close();}
             if (event.type == sf::Event::MouseButtonPressed){
                 if(event.mouseButton.button == sf::Mouse::Left){
-                    sf_lines.push_back(make_vertex(event.mouseButton.x, event.mouseButton.y));
+                    if(!flag){
+                        x = event.mouseButton.x;
+                        y = event.mouseButton.y;
+                    }else{
+                        lines.push_back(Line(x,y,event.mouseButton.x, event.mouseButton.y));
+                        if(y < sweep_line_y){sweep_line_y = y;}
+                        if(event.mouseButton.y < sweep_line_y){sweep_line_y = event.mouseButton.y;}
+                    }
+                    flag = !flag;
                 }else
                 if(event.mouseButton.button == sf::Mouse::Right){
-                    auto& output = main_algo(sf_lines); // algorithm.cpp
-                    for(auto p : output){
-                        sf_intersections.push_back(make_dot(p.x, p.y));
-                    }
-                    output.clear(); // reference to a global var in algorithm.cpp
+                    find_intersections();
                 }
             }
             if (event.type == sf::Event::KeyPressed){
                 if(event.key.code == sf::Keyboard::R){
-                    sf_lines.clear();
-                    sf_intersections.clear();    
+                    lines.clear();
+                    intersections.clear();
+                    flag = false; 
                 }
             }
         }
 
         window.clear(sf::Color::Black);
-        window.draw(&sf_lines[0], sf_lines.size(), sf::Lines);
-        for(auto p: sf_intersections){
-            window.draw(p);
-        }
+        for(auto l: lines){window.draw(l);}
+        for(auto i: intersections){window.draw(i);}
         window.display();
     }
     return 0;
