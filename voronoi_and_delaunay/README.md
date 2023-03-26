@@ -16,4 +16,5 @@ make exe
 apologies for this lazy command format.
 
 
+![voronoi_delaunay](https://user-images.githubusercontent.com/75807819/227634774-459e974f-d3e8-4f45-b76a-270f39a02c7e.gif)
 
